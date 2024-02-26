@@ -35,7 +35,9 @@ def upload_video(youtube, file_path, title, description, category, privacyStatus
                 "categoryId": category
             },
             "status": {
-                "privacyStatus": privacyStatus
+                "privacyStatus": privacyStatus,
+                "selfDeclaredMadeForKids": False,  # 子供向け動画か？
+                "madeForKids": False,  # 大人向けに設定
             }
         },
         # メディアファイルとしてアップロード
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("file_path", help="アップロードするビデオのファイルパス")
     parser.add_argument("--title", help="ビデオのタイトル", default="Default Title")
     parser.add_argument("--description", help="ビデオの説明", default="Default Description")
-    parser.add_argument("--category", help="ビデオのカテゴリ", type=int, default=1)
+    parser.add_argument("--category", help="ビデオのカテゴリ", type=int, default=22)
     parser.add_argument("--privacyStatus", help="ビデオのプライバシーステータス（public, unlisted, private）", default="unlisted")
   
     # 引数を解析
