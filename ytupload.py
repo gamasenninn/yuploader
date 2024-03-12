@@ -6,6 +6,10 @@ from googleapiclient.http import MediaFileUpload
 # OAuth2認証のフローを管理するクラスをインポート
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+import webbrowser
+import os
+
+
 # YouTube APIのサービス名とバージョンを定義
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -13,6 +17,7 @@ YOUTUBE_API_VERSION = "v3"
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 # クライアントの秘密情報が含まれるJSONファイルへのパスを定義
 CLIENT_SECRETS_FILE = r"client_secret.json"
+
 
 # 認証関数を定義
 def authenticate():
@@ -48,6 +53,9 @@ def upload_video(youtube, file_path, title, description, category, privacyStatus
         status, response = request.next_chunk()
         if 'id' in response:
             print(f"Video id '{response['id']}' was successfully uploaded.")
+            url = f"https://youtu.be/{response['id']}"
+            print(f"youtube URL: {url}")
+            webbrowser.open(url, new=0, autoraise=True)
         else:
             print("The upload failed with an unexpected response:", response)
 
@@ -63,6 +71,14 @@ if __name__ == "__main__":
   
     # 引数を解析
     args = parser.parse_args()
+
+
+    # ファイルパスからファイル名を取得（拡張子除く）
+    file_name = os.path.splitext(os.path.basename(args.file_path))[0]
+
+    # タイトルがデフォルトの場合、ファイル名をタイトルに設定
+    if args.title == "Default Title":
+        args.title = file_name
 
     # YouTube APIサービスを認証
     youtube = authenticate()
